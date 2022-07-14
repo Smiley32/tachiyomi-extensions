@@ -10,17 +10,12 @@ import eu.kanade.tachiyomi.source.online.HttpSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import okhttp3.Headers
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.parser.Parser
 import uy.kohesive.injekt.injectLazy
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.TimeUnit
-import kotlin.math.absoluteValue
-import kotlin.random.Random
 
 @Serializable
 data class AralosBDSearchManga(
@@ -122,26 +117,6 @@ class AralosBD : HttpSource() {
     override val baseUrl = "https://aralosbd.fr"
     override val lang = "fr"
     override val supportsLatest = true
-
-    override val client: OkHttpClient = network.cloudflareClient.newBuilder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .build()
-
-    protected val userAgentRandomizer1 = "${Random.nextInt(9).absoluteValue}"
-    protected val userAgentRandomizer2 = "${Random.nextInt(10, 99).absoluteValue}"
-    protected val userAgentRandomizer3 = "${Random.nextInt(100, 999).absoluteValue}"
-
-    override fun headersBuilder(): Headers.Builder = Headers.Builder()
-        .add(
-            "User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/8$userAgentRandomizer1.0.4$userAgentRandomizer3.1$userAgentRandomizer2 Safari/537.36"
-        )
-        .add(
-            "Accept-Language",
-            lang
-        )
 
     private val json: Json by injectLazy()
 
